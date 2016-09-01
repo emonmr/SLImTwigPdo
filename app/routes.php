@@ -1,12 +1,47 @@
 <?php
-
+session_start();
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
 
+
+
 $app->get('/', function (Request $request, Response $response) {
-    $this->logger->addInfo("Ticket list");
+    //$this->logger->addInfo("Ticket list");
+    $this->view->render($response, 'login.twig');
+    return $response;
+});
+
+$app->get('/home', function (Request $request, Response $response) {
+    //$this->logger->addInfo("Ticket list");
     $this->view->render($response, 'home.twig');
     return $response;
+});
+
+$app->post('/auth', function (Request $request, Response $response) {
+    $data = $request->getParsedBody();
+    $mapper = new \App\EmployeeMapper($this->db);
+    $user=$mapper->getUser($data['name'],$data['password']);
+    if(array_key_exists('id' ,$user)){
+        $_SESSION['user']=$user;
+        if($_SESSION['user']['role']=='admin'){
+            return $this->view->render($response, "home.twig");
+        }else{
+            return $this->view->render($response, "login.twig");
+        }
+    }else{
+        return $this->view->render($response, "login.twig");
+    }
+
+});
+
+
+$app->get('/logout', function (Request $request, Response $response) {
+    $mapper = new \App\EmployeeMapper($this->db);
+    unset($_SESSION["user"]['id']);
+    unset($_SESSION["user"]['name']);
+    session_destroy();
+    return $response->withRedirect('/');
+
 });
 
 $app->get('/employee', function (Request $request, Response $response) {
@@ -44,6 +79,7 @@ $app->get('/details/{id}', function(Request $request, Response $response) {
     $details_data = $mapper->getDetails($id);
     //var_dump($details_data); die();
     $messages = $this->flash->getMessages();
+    //var_dump($messages);die();
     $response = $this->view->render($response, "details.twig",['details'=>$details_data,'msg'=>$messages]);
     return $response;
 });
@@ -62,9 +98,10 @@ $app->get('/update/{id}', function(Request $request, Response $response) {
 
 $app->post('/update', function (Request $request, Response $response) {
     $data = $request->getParsedBody();
-    //var_dump($data);
+    //var_dump($data); die();
     $mapper = new \App\EmployeeMapper($this->db);
     $sql=$mapper->editEmployee($data);
+    $this->flash->addMessage('update_message', 'Update! Successfuly Updated!!!');
     //$this->flash->addMessage('update_message', 'Successfuly updated !!!');
     return $response->withRedirect('/details/'.$sql);
 });
@@ -77,7 +114,12 @@ $app->get('/delete/{id}', function(Request $request, Response $response) {
     return $response->withRedirect('/employee');
 });
 
+$app->get('/attendence', function (Request $request, Response $response) {
+    $data = $request->getParsedBody();
+    $mapper = new \App\EmployeeMapper($this->db);
+    $response = $this->view->render($response, "attendence.twig");
 
+});
 
 
 

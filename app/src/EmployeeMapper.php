@@ -5,6 +5,18 @@ namespace App;
 
 class EmployeeMapper extends Mapper
 {
+
+    public function getUser($name,$pass)
+    {
+        $password=sha1($pass);
+        $sql ="select * from users where name='$name' and password='$password'";
+        $stmt = $this->db->query($sql);
+        $row = $stmt->fetch();
+        return $row;
+    }
+
+
+
     public function getEmployee() {
         $sql = "SELECT employee.id ,employee.name,employee.work_time , employee.salary, department.name as department_name , designation.name as designation_name
 FROM `employee` 
@@ -71,6 +83,7 @@ where employee.id='$id'";
         try {
 
             $id = $data['id'];
+            //var_dump($id); die();
             $stmt = $this->db->prepare("update employee set name=:name,email=:email,phone=:phone,gender=:gender, designation_id=:designation_id, department_id=:department_id, work_time=:work_time, salary=:salary where id='$id'");
             $stmt->bindParam(':name', $data['name']);
             $stmt->bindParam(':email', $data['email']);

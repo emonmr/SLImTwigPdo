@@ -1,0 +1,16 @@
+{% extends "layout.twig" %}
+
+{% block title %}Employee List{% endblock %}
+
+{% block placeholder %}
+    <legend>Employee Attendence</legend>
+    <form action="/" method="post" class="well" style="width: 250px">
+
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Employee ID</label>
+                    <input type="text" name="name" class="form-control" id="" placeholder="Enter employee ID" required>
+                </div>
+
+                <button class="btn btn-success">Submit</button>
+    </form>
+{% endblock %}

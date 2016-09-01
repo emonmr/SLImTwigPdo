@@ -1,6 +1,14 @@
 {% extends "layout.twig" %}
 {% block title %}Update Employee{% endblock %}
 {% block placeholder %}
+    {% if msg is not null and msg is not empty %}
+        {% if(msg['update_message']) %}
+            <div class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                <strong>Update!</strong> {{  msg['update_message'][0] }}
+            </div>
+        {% endif %}
+    {% endif %}
 
     <legend>Edit Employee</legend>
     <form action="/insert" method="post" class="well">
@@ -54,6 +62,7 @@
                         {% for designation in desi %}
                             <option value="{{ designation.id }}">{{ designation.name }}</option>
                         {% endfor %}
+
 
                     </select>
                     <!--<input type="text" name="designation" class="form-control" id="desi">-->

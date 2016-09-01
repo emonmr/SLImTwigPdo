@@ -5,7 +5,7 @@
 {% block placeholder %}
     {% if msg is not null and msg is not empty %}
         {% if(msg['delete_message']) %}
-            <div class="alert">
+            <div class="alert alert-success">
             	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             	<strong>Delete!</strong> {{  msg['delete_message'][0] }}
             </div>
